@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 #region Additional Namespaces
 using ChinookSystem.Data.Entities;
 using ChinookSystem.DAL;
+using System.ComponentModel;
 #endregion
 
 namespace ChinookSystem.BLL
 {
+    [DataObject]
     public class ArtistController
     {
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
         //basic query: complete list of DbSet
         public List<Artist> Artist_List()
         {
