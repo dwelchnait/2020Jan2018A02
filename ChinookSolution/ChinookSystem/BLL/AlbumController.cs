@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ChinookSystem.Data.Entities;
 using ChinookSystem.DAL;
 using System.ComponentModel; //ODS
+using DMIT2018Common.UserControls;  //used by error handle user control
 #endregion
 
 namespace ChinookSystem.BLL
@@ -15,6 +16,10 @@ namespace ChinookSystem.BLL
     [DataObject]
     public class AlbumController
     {
+        //private data member to use with error handle messages
+        private List<string> reasons = new List<string>();
+
+        #region Queries
         [DataObjectMethod(DataObjectMethodType.Select,false)]
         //basic query: complete list of DbSet
         public List<Album> Album_List()
@@ -61,5 +66,92 @@ namespace ChinookSystem.BLL
                 return results.ToList();
             }
         }
+        #endregion
+
+        #region Add, Update and Delete
+        [DataObjectMethod(DataObjectMethodType.Insert, false)]
+        public int Album_Add(Album item)
+        {
+            using (var context = new ChinookContext())
+            {
+                if (CheckReleaseYear(item))
+                {
+                    //any additional logic
+                    item.ReleaseLabel = string.IsNullOrEmpty(item.ReleaseLabel) ? null :
+                        item.ReleaseLabel;
+
+                    context.Albums.Add(item);   //staging
+                    context.SaveChanges();      //commit to database
+                    return item.AlbumId;        //return the new identity value of the pkey
+                }
+                else
+                {
+                    throw new BusinessRuleException("Validation Error", reasons);
+                }
+            }
+        }
+
+        [DataObjectMethod(DataObjectMethodType.Update, false)]
+        public int Album_Update(Album item)
+        {
+            using (var context = new ChinookContext())
+            {
+                if (CheckReleaseYear(item))
+                {
+                    //any additional logic
+                    item.ReleaseLabel = string.IsNullOrEmpty(item.ReleaseLabel) ? null :
+                        item.ReleaseLabel;
+
+                    context.Entry(item).State = System.Data.Entity.EntityState.Modified;   //staging
+                    return context.SaveChanges();      //commit to database
+                }
+                else
+                {
+                    throw new BusinessRuleException("Validation Error", reasons);
+                }
+            }
+        }
+
+        [DataObjectMethod(DataObjectMethodType.Delete,false)]
+        public int Album_Delete(Album item)
+        {
+            return Album_Delete(item.AlbumId);
+        }
+
+        public int Album_Delete(int albumid)
+        {
+            using (var context = new ChinookContext())
+            {
+                //physical delete
+                var existing = context.Albums.Find(albumid);
+                context.Albums.Remove(existing);
+                return context.SaveChanges();
+            }
+        }
+        #endregion
+        #region Support Methods
+        private bool CheckReleaseYear(Album item)
+        {
+            bool isValid = true;
+            int releaseyear;
+            if (string.IsNullOrEmpty(item.ReleaseYear.ToString()))
+            {
+                isValid = false;
+                reasons.Add("Release year is required");
+            }
+            else if(!int.TryParse(item.ReleaseYear.ToString(),out releaseyear))
+            {
+                isValid = false;
+                reasons.Add("Release year is not a numeric year (yyyy)");
+            }
+            else if (releaseyear <1950 || releaseyear > DateTime.Today.Year)
+            {
+                isValid = false;
+                reasons.Add(string.Format("Release year of {0} invalid. Year must be between 1950 and today",
+                    releaseyear));
+            }
+            return isValid;
+        }
+        #endregion
     }
 }
