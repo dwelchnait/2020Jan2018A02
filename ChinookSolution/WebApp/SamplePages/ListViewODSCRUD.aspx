@@ -13,6 +13,12 @@
     </blockquote>
     <br />
     <uc1:MessageUserControl runat="server" ID="MessageUserControl" />
+    <asp:ValidationSummary ID="ValidationSummaryE" runat="server" 
+         HeaderText="Correct the following concerns for the editted data."
+         ValidationGroup="EGroup"/>
+        <asp:ValidationSummary ID="ValidationSummaryI" runat="server" 
+         HeaderText="Correct the following concerns for the inserted data."
+         ValidationGroup="IGroup"/>
     <br />
     <%-- ODS CRUD requires an ODS with CRUD methods indicated
         
@@ -42,7 +48,8 @@
         <AlternatingItemTemplate>
             <tr style="background-color: #FFFFFF; color: #284775;">
                 <td>
-                    <asp:Button runat="server" CommandName="Delete" Text="Delete" ID="DeleteButton" />
+                    <asp:Button runat="server" CommandName="Delete" Text="Remove" ID="DeleteButton"
+                         OnClientClick="return confirm('Are you sure you wish to remove this album.')"/>
                     <asp:Button runat="server" CommandName="Edit" Text="Edit" ID="EditButton" />
                 </td>
                 <td>
@@ -68,16 +75,31 @@
             </tr>
         </AlternatingItemTemplate>
         <EditItemTemplate>
+            <asp:RequiredFieldValidator ID="RequiredTitleTextBoxE" runat="server" 
+                ErrorMessage="Title is required." Display="None"
+                 ControlToValidate="TitleTextBoxE" ValidationGroup="EGroup">
+            </asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator ID="RegExTitleTextBoxE" runat="server" 
+                ErrorMessage="Title is limited to 160 characters." Display="None"
+                 ControlToValidate="TitleTextBoxE" ValidationGroup="EGroup"
+                 ValidationExpression="^.{1,160}$">
+            </asp:RegularExpressionValidator>
+            <asp:RegularExpressionValidator ID="RegExReleaseLabelTextBoxE" runat="server" 
+                ErrorMessage="Release Label is limited to 50 characters." Display="None"
+                 ControlToValidate="ReleaseLabelTextBoxE" ValidationGroup="EGroup"
+                 ValidationExpression="^.{0,50}$">
+            </asp:RegularExpressionValidator>
             <tr style="background-color: #999999;">
                 <td>
-                    <asp:Button runat="server" CommandName="Update" Text="Update" ID="UpdateButton" />
+                    <asp:Button runat="server" CommandName="Update" Text="Update" 
+                        ID="UpdateButton" ValidationGroup="EGroup" />
                     <asp:Button runat="server" CommandName="Cancel" Text="Cancel" ID="CancelButton" />
                 </td>
                 <td>
                     <asp:TextBox Text='<%# Bind("AlbumId") %>' runat="server" ID="AlbumIdTextBox" 
                         Width="50px" Enabled ="false"/></td>
                 <td>
-                    <asp:TextBox Text='<%# Bind("Title") %>' runat="server" ID="TitleTextBox" 
+                    <asp:TextBox Text='<%# Bind("Title") %>' runat="server" ID="TitleTextBoxE" 
                         Width="350px"/></td>
                 <td>
                     <asp:DropDownList ID="ArtistList" runat="server" 
@@ -91,7 +113,7 @@
                 <td>
                     <asp:TextBox Text='<%# Bind("ReleaseYear") %>' runat="server" ID="ReleaseYearTextBox" /></td>
                 <td>
-                    <asp:TextBox Text='<%# Bind("ReleaseLabel") %>' runat="server" ID="ReleaseLabelTextBox" 
+                    <asp:TextBox Text='<%# Bind("ReleaseLabel") %>' runat="server" ID="ReleaseLabelTextBoxE" 
                         Width="50px"/></td>
                
                
@@ -105,16 +127,31 @@
             </table>
         </EmptyDataTemplate>
         <InsertItemTemplate>
+            <asp:RequiredFieldValidator ID="RequiredTitleTextBoxI" runat="server" 
+                ErrorMessage="Title is required." Display="None"
+                 ControlToValidate="TitleTextBoxI" ValidationGroup="IGroup">
+            </asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator ID="RegExTitleTextBoxI" runat="server" 
+                ErrorMessage="Title is limited to 160 characters." Display="None"
+                 ControlToValidate="TitleTextBoxI" ValidationGroup="IGroup"
+                 ValidationExpression="^.{1,160}$">
+            </asp:RegularExpressionValidator>
+            <asp:RegularExpressionValidator ID="RegExReleaseLabelTextBoxI" runat="server" 
+                ErrorMessage="Release Label is limited to 50 characters." Display="None"
+                 ControlToValidate="ReleaseLabelTextBoxI" ValidationGroup="IGroup"
+                 ValidationExpression="^.{0,50}$">
+            </asp:RegularExpressionValidator>
             <tr style="">
                 <td>
-                    <asp:Button runat="server" CommandName="Insert" Text="Insert" ID="InsertButton" />
+                    <asp:Button runat="server" CommandName="Insert" Text="Insert" 
+                        ID="InsertButton" ValidationGroup="IGroup" />
                     <asp:Button runat="server" CommandName="Cancel" Text="Clear" ID="CancelButton" />
                 </td>
                 <td>
                     <asp:TextBox Text='<%# Bind("AlbumId") %>' runat="server" ID="AlbumIdTextBox" 
                         Width="50px" Enabled ="false"/></td>
                 <td>
-                    <asp:TextBox Text='<%# Bind("Title") %>' runat="server" ID="TitleTextBox" 
+                    <asp:TextBox Text='<%# Bind("Title") %>' runat="server" ID="TitleTextBoxI" 
                         Width="350px"/></td>
                 <td>
                     <asp:DropDownList ID="ArtistList" runat="server" 
@@ -129,7 +166,7 @@
                     <asp:TextBox Text='<%# Bind("ReleaseYear") %>' runat="server" ID="ReleaseYearTextBox" 
                         Width="50px"/></td>
                 <td>
-                    <asp:TextBox Text='<%# Bind("ReleaseLabel") %>' runat="server" ID="ReleaseLabelTextBox" /></td>
+                    <asp:TextBox Text='<%# Bind("ReleaseLabel") %>' runat="server" ID="ReleaseLabelTextBoxI" /></td>
                
               
             </tr>
@@ -137,7 +174,8 @@
         <ItemTemplate>
             <tr style="background-color: #E0FFFF; color: #333333;">
                 <td>
-                    <asp:Button runat="server" CommandName="Delete" Text="Delete" ID="DeleteButton" />
+                    <asp:Button runat="server" CommandName="Delete" Text="Remove" ID="DeleteButton" 
+                        OnClientClick="return confirm('Are you sure you wish to remove this album.')"/>
                     <asp:Button runat="server" CommandName="Edit" Text="Edit" ID="EditButton" />
                 </td>
                 <td>
@@ -200,7 +238,8 @@
         <SelectedItemTemplate>
             <tr style="background-color: #E2DED6; font-weight: bold; color: #333333;">
                 <td>
-                    <asp:Button runat="server" CommandName="Delete" Text="Delete" ID="DeleteButton" />
+                    <asp:Button runat="server" CommandName="Delete" Text="Remove" ID="DeleteButton" 
+                        OnClientClick="return confirm('Are you sure you wish to remove this album.')"/>
                     <asp:Button runat="server" CommandName="Edit" Text="Edit" ID="EditButton" />
                 </td>
                 <td>
