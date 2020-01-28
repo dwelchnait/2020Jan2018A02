@@ -9,6 +9,7 @@ using ChinookSystem.Data.Entities;
 using ChinookSystem.DAL;
 using System.ComponentModel; //ODS
 using DMIT2018Common.UserControls;  //used by error handle user control
+using ChinookSystem.Data.POCOs;
 #endregion
 
 namespace ChinookSystem.BLL
@@ -66,6 +67,23 @@ namespace ChinookSystem.BLL
                 return results.ToList();
             }
         }
+
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
+        public List<AlbumArtists> Album_AlbumArtists()
+        {
+            using (var context = new ChinookContext())
+            {
+                var results = from x in context.Albums
+                              select new AlbumArtists
+                              {
+                                  AlbumTitle = x.Title,
+                                  Year = x.ReleaseYear,
+                                  ArtistName = x.Artist.Name
+                              };
+                return results.ToList();
+            }
+        }
+
         #endregion
 
         #region Add, Update and Delete
