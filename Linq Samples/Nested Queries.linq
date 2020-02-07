@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Connection>
-    <ID>2679fc39-7e05-4ba2-bc87-a4b797ce2943</ID>
+    <ID>8fae8096-aa9b-4a23-a6bc-00e0c98a4d7e</ID>
     <Persist>true</Persist>
     <Server>.</Server>
     <Database>Chinook</Database>
@@ -45,16 +45,18 @@ void Main()
 	//results.Dump();
 	
 	
-	//Create a list of Playlist with more that 15 tracks.
+	//Create a list of Playlist with x number of tracks.
 	//Show the playlist name, count of tracks, total play time for 
 	//   the playlist and the list of tracks on the playlist.
 	//For each track show the song name and Genre.
 	//Order the track list by Genre.
 	//Use strong datatypes for all data.
 	
+	var playlistsize = 10;
+	
 	var plresults = from pl in Playlists
-					where pl.PlaylistTracks.Count() > 15
-					select new Whatever
+					where pl.PlaylistTracks.Count() == playlistsize
+					select new ClientPlayList
 					{
 						Name = pl.Name,
 						TrackCount = pl.PlaylistTracks.Count(),
@@ -94,14 +96,10 @@ public class MyPlayList
 	public List<Song> Songs {get;set;}
 }
 
-public class Whatever
+public class ClientPlayList
 {
 	public string Name {get;set;}
 	public int TrackCount {get;set;}
 	public int PlayTime {get;set;}
 	public IEnumerable <PlayListSong> PlaylistSongs {get;set;}
 }
-
-
-
-
