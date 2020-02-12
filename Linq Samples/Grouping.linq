@@ -1,6 +1,6 @@
 <Query Kind="Expression">
   <Connection>
-    <ID>0d2fa424-3494-49d8-b0e1-e4cc5b81b56d</ID>
+    <ID>2679fc39-7e05-4ba2-bc87-a4b797ce2943</ID>
     <Persist>true</Persist>
     <Server>.</Server>
     <Database>Chinook</Database>
@@ -148,7 +148,16 @@ select new
 				}
 }
 
-
+//grouping on multiple attribute not in a class
+//List of customers grouped by country and state
+from c in Customers
+group c by new {c.Country, c.State} into gResidence
+select new
+{
+  country = gResidence.Key.Country,
+  state = gResidence.Key.State,
+  numberofcustomers = gResidence.Count()
+}
 
 
 
