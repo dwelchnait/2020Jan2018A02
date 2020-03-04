@@ -41,9 +41,48 @@ namespace ChinookSystem.BLL
         {
             using (var context = new ChinookContext())
             {
-                //code to go here
-                
-             
+                //trx
+                //query the PlayList table to see if the playlistname exists
+                //if not
+                //    create an instance of PlayList
+                //    load
+                //    add
+                //    set tracknumber to 1
+                //if yes
+                //    query PlaylistTrack for track id
+                //    if found
+                //       yes:throw an error
+                //       no:query Playlist to max tracknumber, increment++
+                //create an instance of PlaylistTrack
+                //load
+                //add
+                //save changes
+                int tracknumber = 0;
+                PlaylistTrack newtrack = null;
+                Playlist exists = (from x in context.Playlists
+                                  where x.Name.Equals(playlistname)
+                                      && x.UserName.Equals(username)
+                                  select x).FirstOrDefault();
+                if (exists == null)
+                {
+                    //new playlist
+                    exists = new Playlist();
+                    exists.Name = playlistname;
+                    exists.UserName = username;
+                    context.Playlists.Add(exists);
+                    tracknumber = 1;
+                }
+                else
+                {
+                    //playlist that exists
+                    newtrack = (from x in context.PlaylistTracks
+                                where x.Playlist.Name.Equals(playlistname)
+                                   && x.Playlist.UserName.Equals(username)
+                                   && x.TrackId == trackid
+                                select x).FirstOrDefault();
+
+
+                }
             }
         }//eom
         public void MoveTrack(string username, string playlistname, int trackid, int tracknumber, string direction)
