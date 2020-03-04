@@ -79,8 +79,28 @@ namespace WebApp.SamplePages
 
         protected void PlayListFetch_Click(object sender, EventArgs e)
         {
-            //code to go here
- 
+            //security is yet to be implemented
+            //this page needs to known the username of the currently logged user
+            //temporarily we will hard core the username
+            string username = "HansenB";
+            if (string.IsNullOrEmpty(PlaylistName.Text))
+            {
+                MessageUserControl.ShowInfo("Missing Data","Enter the playlist name");
+            }
+            else
+            {
+                //Your code does NOT need to have a try/catch
+                //The try/catch is embedded within MessageUserControl
+                //The syntax for executing with MessageUserControl
+                //   MessageUserControl.TryRun(() => { coding block},"Success Title","Success message");
+                MessageUserControl.TryRun(( ) =>
+                {
+                    PlaylistTracksController sysmgr = new PlaylistTracksController();
+                    List<UserPlaylistTrack> info = sysmgr.List_TracksForPlaylist(PlaylistName.Text, username);
+                    PlayList.DataSource = info;
+                    PlayList.DataBind();
+                },"Playlist","View current songs on playlist");
+            }
         }
 
         protected void MoveDown_Click(object sender, EventArgs e)
