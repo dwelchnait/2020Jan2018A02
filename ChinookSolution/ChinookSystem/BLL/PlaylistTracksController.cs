@@ -10,6 +10,7 @@ using ChinookSystem.Data.DTOs;
 using ChinookSystem.Data.POCOs;
 using ChinookSystem.DAL;
 using System.ComponentModel;
+using DMIT2018Common.UserControls;
 #endregion
 
 namespace ChinookSystem.BLL
@@ -52,11 +53,12 @@ namespace ChinookSystem.BLL
                 //    query PlaylistTrack for track id
                 //    if found
                 //       yes:throw an error
-                //       no:query Playlist to max tracknumber, increment++
+                //       no:query PlaylistTracks to max tracknumber, increment++
                 //create an instance of PlaylistTrack
                 //load
                 //add
                 //save changes
+                List<string> errors = new List<string>();
                 int tracknumber = 0;
                 PlaylistTrack newtrack = null;
                 Playlist exists = (from x in context.Playlists
@@ -69,7 +71,7 @@ namespace ChinookSystem.BLL
                     exists = new Playlist();
                     exists.Name = playlistname;
                     exists.UserName = username;
-                    context.Playlists.Add(exists);
+                    context.Playlists.Add(exists);  //stages ONLY
                     tracknumber = 1;
                 }
                 else
@@ -80,8 +82,48 @@ namespace ChinookSystem.BLL
                                    && x.Playlist.UserName.Equals(username)
                                    && x.TrackId == trackid
                                 select x).FirstOrDefault();
+                    if (newtrack == null)
+                    {
+                        //can add to playlist
+                        tracknumber = (from x in context.PlaylistTracks
+                                       where x.Playlist.Name.Equals(playlistname)
+                                          && x.Playlist.UserName.Equals(username)
+                                       select x.TrackNumber).Max();
+                        tracknumber++;
+                    }
+                    else
+                    {
+                        //track already on playlist
+                        //business rule states duplicate tracks not allowed
+                        //violates the business rule
 
+                        //throw an exception
+                        //throw new Exception("Track already on the playlist. Duplicates not allowed.");
 
+                        //throw a Business Rule Exception
+                        //collect the errors into a List<string>
+                        //After all validation is done, test the collection (List<T>) for
+                        //    having any messages, if so, throw new BusinessRuleException()
+                        errors.Add("Track already on the playlist. Duplicates not allowed.");
+                    }
+
+                }
+
+                //all validation of Playlist and Playlisttrack is complete
+                if (errors.Count > 0)
+                {
+                    throw new BusinessRuleException("Adding a Track", errors);
+                }
+                else
+                {
+                    //create/load/add a PlaylistTrack
+                    newtrack = new PlaylistTrack();
+                    
+                    newtrack.TrackId = trackid;
+                    newtrack.TrackNumber = tracknumber;
+                    exists.PlaylistTracks.Add(newtrack);  //stage ONLY,USE THE PARENT
+
+                    context.SaveChanges();  //physical addition
                 }
             }
         }//eom
