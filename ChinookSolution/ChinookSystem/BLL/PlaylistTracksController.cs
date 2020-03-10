@@ -127,12 +127,94 @@ namespace ChinookSystem.BLL
                 }
             }
         }//eom
-        public void MoveTrack(string username, string playlistname, int trackid, int tracknumber, string direction)
+        public void MoveTrack(string username, string playlistname, int trackid, string direction)
         {
             using (var context = new ChinookContext())
             {
                 //code to go here 
+                //business rules need to be executed within your BLL
+                var exists = (from x in context.Playlists
+                              where x.UserName.Equals(username)
+                                 && x.Name.Equals(playlistname)
+                              select x).FirstOrDefault();
+                if (exists == null)
+                {
+                    throw new Exception("Play list has been remove from the system.");
 
+                }
+                else
+                {
+                    var moveTrack = (from x in exists.PlaylistTracks
+                                     where x.TrackId == trackid
+                                     select x).FirstOrDefault();
+                    if (moveTrack == null)
+                    {
+                        throw new Exception("Song on play list has been remove from the system.");
+                    }
+                    else
+                    {
+                        //try moving
+                        //check movement is still possible
+                        //determine direction
+                        PlaylistTrack otherTrack = null;
+                        if (direction.Equals("up"))
+                        {
+                            //up
+                            if (moveTrack.TrackNumber == 1)
+                            {
+                                throw new Exception("Song on play list already at the top.");
+                            }
+                            else
+                            {
+                                //prep for move
+                                otherTrack = (from x in exists.PlaylistTracks
+                                                  where x.TrackNumber == moveTrack.TrackNumber - 1
+                                                  select x).FirstOrDefault();
+                                if (otherTrack == null)
+                                {
+                                    throw new Exception("Missing required other song track record.");
+                                }
+                                else
+                                {
+                                    moveTrack.TrackNumber -= 1;
+                                    otherTrack.TrackNumber += 1;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //down
+                            if (moveTrack.TrackNumber == exists.PlaylistTracks.Count)
+                            {
+                                throw new Exception("Song on play list already at the bottom.");
+                            }
+                            else
+                            {
+                                //prep for move
+                                otherTrack = (from x in exists.PlaylistTracks
+                                                  where x.TrackNumber == moveTrack.TrackNumber + 1
+                                                  select x).FirstOrDefault();
+                                if (otherTrack == null)
+                                {
+                                    throw new Exception("Missing required other song track record.");
+                                }
+                                else
+                                {
+                                    moveTrack.TrackNumber += 1;
+                                    otherTrack.TrackNumber -= 1;
+                                }
+                            }
+                        }
+                        //alter the database
+                        //this is not a CRUD update where multiple fields on a record
+                        //   could be altered and you do not know which fields to alter
+                        //you have one field on the instance of the entity record
+                        //transaction
+                        context.Entry(moveTrack).Property("TrackNumber").IsModified = true;
+                        context.Entry(otherTrack).Property("TrackNumber").IsModified = true;
+                        context.SaveChanges();
+                    }
+                }
             }
         }//eom
 
