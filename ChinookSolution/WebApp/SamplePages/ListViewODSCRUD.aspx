@@ -82,7 +82,7 @@
             <asp:RegularExpressionValidator ID="RegExTitleTextBoxE" runat="server" 
                 ErrorMessage="Title is limited to 160 characters." Display="None"
                  ControlToValidate="TitleTextBoxE" ValidationGroup="EGroup"
-                 ValidationExpression="^.{1,160}$">
+                 ValidationExpression="^.{1,20}$">
             </asp:RegularExpressionValidator>
             <asp:RegularExpressionValidator ID="RegExReleaseLabelTextBoxE" runat="server" 
                 ErrorMessage="Release Label is limited to 50 characters." Display="None"
@@ -93,7 +93,8 @@
                 <td>
                     <asp:Button runat="server" CommandName="Update" Text="Update" 
                         ID="UpdateButton" ValidationGroup="EGroup" />
-                    <asp:Button runat="server" CommandName="Cancel" Text="Cancel" ID="CancelButton" />
+                    <asp:Button runat="server" CommandName="Cancel" Text="Cancel" 
+                        ID="CancelButton" />
                 </td>
                 <td>
                     <asp:TextBox Text='<%# Bind("AlbumId") %>' runat="server" ID="AlbumIdTextBox" 

@@ -199,6 +199,7 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="SamplePages\AccessingDataSetControls.aspx" />
+    <Content Include="SamplePages\ListView Demo.aspx" />
     <Content Include="SamplePages\ListViewODSCRUD.aspx" />
     <Content Include="SamplePages\ManagePlaylist.aspx" />
     <Content Include="SamplePages\ODSReview.aspx" />
@@ -382,6 +383,13 @@
     </Compile>
     <Compile Include="SamplePages\AccessingDataSetControls.aspx.designer.cs">
       <DependentUpon>AccessingDataSetControls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SamplePages\ListView Demo.aspx.cs">
+      <DependentUpon>ListView Demo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SamplePages\ListView Demo.aspx.designer.cs">
+      <DependentUpon>ListView Demo.aspx</DependentUpon>
     </Compile>
     <Compile Include="SamplePages\ListViewODSCRUD.aspx.cs">
       <DependentUpon>ListViewODSCRUD.aspx</DependentUpon>
